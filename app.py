@@ -104,7 +104,7 @@ def login():
 
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
     conn = get_db_connection()
-    user = conn.excute("SELECT * FROM users WHERE email = ? AND password = ?", (email, hashed_password)).fetchone()
+    user = conn.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, hashed_password)).fetchone()
     conn.close()
 
     if user:
