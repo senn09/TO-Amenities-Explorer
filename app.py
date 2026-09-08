@@ -3,7 +3,7 @@ import sqlite3
 import os
 import hashlib
 import dotenv
-import wraps
+from functools import wraps
 
 API_TOKEN = os.getenv("API_TOKEN")
 
@@ -16,8 +16,7 @@ def require_token(f):
         if token != f"Bearer {API_TOKEN}":
             return jsonify({"error": "Unauthorized"}), 401
         return f(*args,**kwargs)
-    return decorated_function()
-
+    return decorated_function
 
 def get_db_connection():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
