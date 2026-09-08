@@ -3,6 +3,15 @@ revision = 3
 requires-python = ">=3.13"
 
 [[package]]
+name = "attrs"
+version = "26.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9a/8e/82a0fe20a541c03148528be8cac2408564a6c9a0cc7e9171802bc1d26985/attrs-26.1.0.tar.gz", hash = "sha256:d03ceb89cb322a8fd706d4fb91940737b6642aa36998fe130a9bc96c985eff32", size = 952055, upload-time = "2026-03-19T14:22:25.026Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl", hash = "sha256:c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309", size = 67548, upload-time = "2026-03-19T14:22:23.645Z" },
+]
+
+[[package]]
 name = "blinker"
 version = "1.9.0"
 source = { registry = "https://pypi.org/simple" }
@@ -35,6 +44,21 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/26/00/35d85dcce6c57fdc871f3867d465d780f302a175ea360f62533f12b27e2b/flask-3.1.3.tar.gz", hash = "sha256:0ef0e52b8a9cd932855379197dd8f94047b359ca0a78695144304cb45f87c9eb", size = 759004, upload-time = "2026-02-19T05:00:57.678Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/7f/9c/34f6962f9b9e9c71f6e5ed806e0d0ff03c9d1b0b2340088a0cf4bce09b18/flask-3.1.3-py3-none-any.whl", hash = "sha256:f4bcbefc124291925f1a26446da31a5178f9483862233b23c0c96a20701f670c", size = 103424, upload-time = "2026-02-19T05:00:56.027Z" },
+]
+
+[[package]]
+name = "funcs"
+version = "0.11.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "solus" },
+    { name = "typing-aliases" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/0b/0e/75dfd32c1859e35ade0bc24a032224e990e3f482e5bd33187abd5f7ad53f/funcs-0.11.0.tar.gz", hash = "sha256:d4190ded01b245bdaf33a98d4190248d94a0f784e93b7c2fff69e38a244e4326", size = 20301, upload-time = "2024-08-13T17:56:45.178Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/31/1e/52a53d7b74143774bc717daf65ff41853883f9bd76541f04196d90a6d185/funcs-0.11.0-py3-none-any.whl", hash = "sha256:1487750e2c8a6055b5fc923ab8127876ccd1354cffe7f9763332ab9bf2eafbf6", size = 12855, upload-time = "2024-08-13T17:56:43.852Z" },
 ]
 
 [[package]]
@@ -126,12 +150,36 @@ wheels = [
 ]
 
 [[package]]
+name = "named"
+version = "1.4.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/63/89/3e2615a20ce923e58ac07550ce1defa7fc46e27fda0d02fbdfdb1c42b98b/named-1.4.2.tar.gz", hash = "sha256:1d1fe741b27b4bb558442a7a759415a840da4f804f0b1759a251714a4b4ad055", size = 4596, upload-time = "2024-03-15T10:29:50.983Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/e2/6c/53205820011c6ec65dee43f52ce908be23650eaf3f7b6311660fb36d34fe/named-1.4.2-py3-none-any.whl", hash = "sha256:7b0a607cd6f01af239c5c2bb2fbdb0b779f8b649c994468e039aaf433c629498", size = 4920, upload-time = "2024-03-15T10:29:49.91Z" },
+]
+
+[[package]]
 name = "python-dotenv"
 version = "1.2.3"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/6a/53/ed9d74092561d4b01a2ef1349d52cdbc135e526c245f366b089cfca6de49/python_dotenv-1.2.3.tar.gz", hash = "sha256:a20a594dabeaa385725aa239d5244871c143ecb356add8a20fcf23773a6c3a35", size = 58945, upload-time = "2026-08-16T16:54:54.067Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0d/17/c5c6b53ddc18f297992099b3d9ec16c855c0ccc83263a21fe4d1c625ec6c/python_dotenv-1.2.3-py3-none-any.whl", hash = "sha256:904552145e8bfed22162c09dab1c2b9b54fefa7b23ba780f4f26ca0316b0f0d9", size = 22780, upload-time = "2026-08-16T16:54:52.473Z" },
+]
+
+[[package]]
+name = "solus"
+version = "1.2.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "named" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/1b/39/30f3e81fa40f51ccf55a187928e8783e4860f9002d4e48abcfcccabe9d10/solus-1.2.2.tar.gz", hash = "sha256:4bf499b0ea8fd9aca23d27d559008dfee1c75b9336f5a9c7143069c3f5282444", size = 4078, upload-time = "2024-02-26T12:20:19.321Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bf/14/e63493752b7e408f775e10cea9551a61190aaa99b63483b57dc769af9602/solus-1.2.2-py3-none-any.whl", hash = "sha256:2587bcc74cd872a21532cf5cdc9617796473626c3fd7033fcbb09e0f1bf528bc", size = 4322, upload-time = "2024-02-26T12:20:17.604Z" },
 ]
 
 [[package]]
@@ -143,6 +191,7 @@ dependencies = [
     { name = "gunicorn" },
     { name = "jsonify" },
     { name = "python-dotenv" },
+    { name = "wraps" },
 ]
 
 [package.metadata]
@@ -151,6 +200,28 @@ requires-dist = [
     { name = "gunicorn", specifier = ">=26.2.0" },
     { name = "jsonify", specifier = ">=0.5" },
     { name = "python-dotenv", specifier = ">=1.2.3" },
+    { name = "wraps", specifier = ">=0.15.0" },
+]
+
+[[package]]
+name = "typing-aliases"
+version = "1.10.1"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/d5/6a/34e9be629127c099a92ec19ed030bf96ab81a3f6e023b9cb6bc686444f9b/typing_aliases-1.10.1.tar.gz", hash = "sha256:d20bb799a4a4b0b9d25c26821ad08e4d42114c92b87ff12b56a5abc87767bd19", size = 7909, upload-time = "2024-04-22T18:03:57.729Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/81/1c/543e0a6c6a8e8794407deaf50337cc3e595e4c68724d3d38c53cb70ed049/typing_aliases-1.10.1-py3-none-any.whl", hash = "sha256:41704ed78fd51c413247897f324acd6186a3dbeb0350e49d7e6138afd07df76c", size = 8177, upload-time = "2024-04-22T18:03:56.437Z" },
+]
+
+[[package]]
+name = "typing-extensions"
+version = "4.16.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/f6/cc/6253133b5bb138fc3306cebfbda2c520f545d36b5be2c7255cc528bb45d6/typing_extensions-4.16.0.tar.gz", hash = "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5", size = 113555, upload-time = "2026-07-02T08:40:05.92Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/49/d3/b8441a820a491ddfc024b0b0cf0393375b75ea13866d9c66727e54c2fc80/typing_extensions-4.16.0-py3-none-any.whl", hash = "sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8", size = 45571, upload-time = "2026-07-02T08:40:04.659Z" },
 ]
 
 [[package]]
@@ -163,4 +234,20 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/dd/b2/381be8cfdee792dd117872481b6e378f85c957dd7c5bca38897b08f765fd/werkzeug-3.1.8.tar.gz", hash = "sha256:9bad61a4268dac112f1c5cd4630a56ede601b6ed420300677a869083d70a4c44", size = 875852, upload-time = "2026-04-02T18:49:14.268Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/93/8c/2e650f2afeb7ee576912636c23ddb621c91ac6a98e66dc8d29c3c69446e1/werkzeug-3.1.8-py3-none-any.whl", hash = "sha256:63a77fb8892bf28ebc3178683445222aa500e48ebad5ec77b0ad80f8726b1f50", size = 226459, upload-time = "2026-04-02T18:49:12.72Z" },
+]
+
+[[package]]
+name = "wraps"
+version = "0.15.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "funcs" },
+    { name = "named" },
+    { name = "typing-aliases" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/95/d8/bdfaccce710957873c9f6c37260274cbd4b91b4686315fbf2a00d5cb8f90/wraps-0.15.0.tar.gz", hash = "sha256:498456ec8f8b89f0bdf78f50535916837a1b240f33dd70de9a8d3a441a030a6a", size = 41823, upload-time = "2024-08-25T14:20:21.438Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a2/5d/8abd41b1d4d806b08c81cfeec606ed9888b6650c67e7853bddda88891bd7/wraps-0.15.0-py3-none-any.whl", hash = "sha256:16077c8738202e877d2eb8db83533b9d6226dee9bf97242f1137bceab957d004", size = 40214, upload-time = "2024-08-25T14:20:20.454Z" },
 ]

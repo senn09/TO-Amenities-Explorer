@@ -9,6 +9,7 @@ dependencies = [
     "gunicorn>=26.2.0",
     "jsonify>=0.5",
     "python-dotenv>=1.2.3",
+    "wraps>=0.15.0",
 ]
 
 [tool.uv.workspace]

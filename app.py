@@ -2,8 +2,22 @@ from flask import Flask, jsonify, request
 import sqlite3
 import os
 import hashlib
+import dotenv
+import wraps
+
+API_TOKEN = os.getenv("API_TOKEN")
 
 app = Flask(__name__)
+
+def require_token(f):
+    @wraps(f)
+    def decorated_function(*args,**kwargs):
+        token = request.headers.get("Authorization")
+        if token != f"Bearer {API_TOKEN}":
+            return jsonify({"error": "Unauthorized"}), 401
+        return f(*args,**kwargs)
+    return decorated_function()
+
 
 def get_db_connection():
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -49,6 +63,7 @@ def get_products():
     return jsonify([dict(product) for product in products])
 
 @app.route("/products", methods=["POST"])
+@require_token
 def create_product():
     data = request.get_json()
     name = data.get("name")
