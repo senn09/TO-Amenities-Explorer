@@ -25,8 +25,8 @@
         <div id="registerMessage"></div>
 
         <script>
-            const BASE_URL = "https://to-amenities-explorer.onrender.com";
-            // const BASE_URL = "http://127.0.0.1:5000";
+            // const BASE_URL = "https://to-amenities-explorer.onrender.com";
+            const BASE_URL = "http://127.0.0.1:5000";
 
             function fetchProducts(){
                 document.getElementById("products").innerText = "Loading..."
@@ -44,7 +44,7 @@
             }
 
             function registerUser(){
-                const email = document.getElementById("regemail").value;
+                const email = document.getElementById("regEmail").value;
                 const password = document.getElementById("regPassword").value;
             
                 fetch(`${BASE_URL}/register`,{
