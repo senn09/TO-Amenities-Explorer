@@ -19,7 +19,7 @@
         <hr/>
 
         <h2>Register new user</h2>
-        <input type="text" id="regUsername" placeholder="Username"/><br/>
+        <input type="text" id="regEmail" placeholder="Email"/><br/>
         <input type="password" id="regPassword" placeholder="Password"/><br/>
         <button onclick="registerUser()">Register</button>
         <div id="registerMessage"></div>
@@ -44,7 +44,7 @@
             }
 
             function registerUser(){
-                const username = document.getElementById("regUsername").value;
+                const email = document.getElementById("regemail").value;
                 const password = document.getElementById("regPassword").value;
             
                 fetch(`${BASE_URL}/register`,{
@@ -52,7 +52,7 @@
                     headers: {
                         "Content-Type": "application/json"
                     },
-                    body: JSON.stringify({username,password})
+                    body: JSON.stringify({email,password})
                 })
                 .then(res => res.json())
                 .then(response => {
