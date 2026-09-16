@@ -1,135 +1,126 @@
 from flask import Flask, jsonify, request
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy import String, ForeignKey, select
+from typing import List
+import data_import
+from dotenv import load_dotenv
 import os
 import hashlib
-import dotenv
-from functools import wraps
-from flask_cors import CORS
 
-API_TOKEN = os.getenv("API_TOKEN")
+load_dotenv()
+
+class Base(DeclarativeBase):
+    pass
 
 app = Flask(__name__)
-CORS(app)
+if os.getenv('DATABASE_TYPE') == 'sqlite':
+    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{app.root_path}/{os.getenv('DATABASE_NAME')}"
 
-def require_token(f):
-    @wraps(f)
-    def decorated_function(*args,**kwargs):
-        token = request.headers.get("Authorization")
-        if token != f"Bearer {API_TOKEN}":
-            return jsonify({"error": "Unauthorized"}), 401
-        return f(*args,**kwargs)
-    return decorated_function
+db = SQLAlchemy(model_class=Base)
 
-def get_db_connection():
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    db_path = os.path.join(BASE_DIR, "database.db")
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
-    return conn
+class User(db.Model):
+    __tablename__ = 'user'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(String, unique=True)
+    password: Mapped[str] = mapped_column(String, nullable=False)
 
-@app.route("/init", methods=["GET"])
-def init_db():
-    conn = get_db_connection()
-    conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS products(
-            id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            name TEXT NOT NULL, 
-            price REAL NOT NULL
-            )        
-            """)
+class Amenity(db.Model):
+    __tablename__ = 'amenity'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(), nullable=False)
+    type_id: Mapped[int] = mapped_column(ForeignKey("amenity_type.id"))
+    address: Mapped[str] = mapped_column(String())
 
-    conn.execute(
-            """
-            CREATE TABLE IF NOT EXISTS users(
-            id INTEGER PRIMARY KEY AUTOINCREMENT, 
-            email TEXT UNIQUE NOT NULL, 
-            password TEXT NOT NULL
-            )        
-            """)
-    conn.commit()
-    conn.close()
-    return jsonify({"message": "Database initialized successfully"}), 201
+    amenity_type: Mapped["AmenityType"] = relationship(back_populates="amenities")
+
+class AmenityType(db.Model):
+    __tablename__ = 'amenity_type'
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] =  mapped_column(String(), nullable=False)
+
+    amenities: Mapped[List["Amenity"]] = relationship(back_populates="amenity_type")
+
+db.init_app(app)
 
 @app.route("/")
 def home():
     message = {"message": "Hello, World!"}
     return jsonify(message)
 
-@app.route("/products", methods=["GET"])
-def get_products():
-    conn = get_db_connection()
-    products = conn.execute("SELECT * FROM products").fetchall()
-    conn.close()
-    return jsonify([dict(product) for product in products])
+@app.route("/amenities", methods=["GET"])
+def get_amenities():
+    amenities = db.session.scalars(select(Amenity)).all()
+    amenities_list = [{
+        'id': amenity.id,
+        'name': amenity.name,
+        'type_id': amenity.type_id,
+        'address': amenity.address,
+    } for amenity in amenities]
+    return jsonify(amenities_list)
 
-@app.route("/products", methods=["POST"])
-@require_token
-def create_product():
-    data = request.get_json()
-    name = data.get("name")
-    price = data.get("price")
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("INSERT INTO products (name, price) VALUES (?, ?)", (name, price))
-    conn.commit()
-    new_product_id = cursor.lastrowid
-    conn.close()
 
-    new_product = {
-        "id": new_product_id, 
-        "name": name,
-        "price": price
-    }
-
-    message = {
-        "message": "Product created successfully",
-        "product": new_product
-    }
-
-    return jsonify(message), 201
-
-@app.route("/register", methods=["POST"])
-def register():
-    data = request.get_json()
-    email = data.get("email")
-    password = data.get("password")
-
-    if not email or not password:
-        return jsonify({"error": "Missing email or password"}), 400
-
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
-
-    try:
-        conn = get_db_connection()
-        conn.execute("INSERT INTO users (email, password) VAlUES (?, ?)", (email, hashed_password))
-        conn.commit()
-        conn.close()
-        return jsonify({"message": "User registered successfully"}), 201
-    except sqlite3.IntegrityError: # email already exists
-        return jsonify({"error": "Email already exists"}), 409
+@app.route("/users", methods=["GET"])
+def get_users():
+    users = db.session.scalars(select(User)).all()
+    user_list = [{
+        'id': user.id,
+        'username': user.username,
+        'password': user.password,
+    } for user in users]
+    return jsonify(user_list), 200
 
 @app.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
-    email = data.get("email")
+    username = data.get("username")
     password = data.get("password")
 
-    if not email or not password:
-        return jsonify({"error": "Missing email or password"}), 400
+    if not username or not password:
+            return jsonify({"error": "Missing username or password"}), 400
 
     hashed_password = hashlib.sha256(password.encode()).hexdigest()
-    conn = get_db_connection()
-    user = conn.execute("SELECT * FROM users WHERE email = ? AND password = ?", (email, hashed_password)).fetchone()
-    conn.close()
 
+    stmt = select(User).where(User.username ==  username and User.password == hashed_password)
+    user = db.session.scalar(stmt)
     if user:
-        return jsonify({"message": f"Welcome {email}"})
+        return jsonify({"message": f"Welcome {user.username}"})
     else:
         return jsonify({"error": "Invalid credentials"}), 401
 
+@app.route("/register", methods=["POST"])
+def add_user():
+    data = request.get_json()
+
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({"error": "Missing username or password"}), 400
+
+    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    
+    new_user = User(
+        username = username,
+        password = hashed_password,
+    )
+
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({'message': 'successfully added user'})
+
+def refresh_db():
+    params = data_import.params
+    for param in params:
+        df = data_import.pull_data(param=param)
+        formatted_df = data_import.format_data_for_db(param=param, df=df)
+        formatted_df.to_sql(name='amenity', con=db.engine, if_exists='append', index=False)
+        print(f"Update amenity with {param['id']}")
+    
 
 if __name__ == "__main__":
     with app.app_context():
-        init_db()
+        db.create_all()
+        refresh_db()
     app.run(debug=True)
