@@ -1,71 +1,44 @@
-import pandas_geojson as pdg
-from typing import List
-from sqlalchemy import create_engine, String, ForeignKey
-from sqlalchemy.orm import declarative_base, sessionmaker, Mapped, mapped_column, relationship
+import requests
+import pandas as pd
+from io import StringIO
 
-# format data for pandas
-library_geojson = pdg.read_geojson('data/tpl-branch-general-information - 4326.geojson')
-library_df = library_geojson.to_dataframe()
+base_url = "https://ckan0.cf.opendata.inter.prod-toronto.ca"
+	
+params = [{ 
+            "id": "library-branch-general-information",
+            "col": [
+                'BranchName', 
+                'Address', 
+                'Website', 
+                'SquareFootage', 
+                'PublicParking',
+                'PublicWashroom',
+                'Hours',
+                ]}, { 
+            "id": "parks-and-recreation-facilities",
+            "col": [
+                'ASSET_NAME',
+                'TYPE',
+                'ADDRESS',
+                'PHONE',
+                'URL',
+            ]}
+]
 
-# relevant columns
-library_columns = [
-    'properties.BranchName', 
-    'properties.Address', 
-    'properties.Website', 
-    'properties.SquareFootage', 
-    'properties.PublicParking',
-    'properties.PublicWashroom',
-    'properties.Hours',
-    ]
+for param in params:
+    print(f'retreving {param['id']} ...')
+    url = base_url + "/api/3/action/package_show"
+    package = requests.get(url, params = param).json()
 
-relevant_library_df = library_df[library_columns]
+    # To get resource data:
+    for idx, resource in enumerate(package["result"]["resources"]):
 
-engine = create_engine('sqlite:///database.db', echo=True)
+        # for datastore_active resources:
+        if resource["datastore_active"]:
 
-Base = declarative_base()
-
-class Amenity(Base):
-    __tablename__ = 'amenity'
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(String(), nullable=False)
-    type_id: Mapped[int] = mapped_column(ForeignKey("amenity_type.id"))
-    address: Mapped[str] = mapped_column(String())
-
-    amenity_type: Mapped["AmenityType"] = relationship(back_populates="amenities")
-
-class AmenityType(Base):
-    __tablename__ = 'amenity_type'
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] =  mapped_column(String(), nullable=False)
-
-    amenities: Mapped[List["Amenity"]] = relationship(back_populates="amenity_type")
-
-Base.metadata.create_all(engine)
-
-Session = sessionmaker(bind=engine)
-
-if __name__ == "__main__":
-    pass
-
-    # with Session() as session:
-    #     new_amenities_type = AmenityType(name='Library')
-    #     session.add(new_amenities_type)
-    #     session.commit()
-
-    # with Session() as session:
-    #     for l in relevant_library_df.iterrows():
-    #         # check if entry is already in the database
-    #         try:
-    #             present_result = session.query(Amenity).filter(Amenity.name == l[1]['properties.BranchName']).one()
-    #             # TODO instead of .one() and getting an exception there might be something sqlalchemy has
-    #             print(f"{l[1]['properties.BranchName']} already has already been added")
-    #         except:
-    #             print(f"{l[1]['properties.BranchName']} has NOT been added yet, adding now ...")
-    #             new_libary = Amenity(
-    #                 name=l[1]['properties.BranchName'],
-    #                 type_id=1, # 1 - Library ; TODO update this reference to be dynamic
-    #                 address=l[1]['properties.Address'],
-    #                 )
-    #             session.add(new_libary)
-    #     session.commit() # TODO should I commit for every entry or after reading the entire db?
+            # To get all records in CSV format:
+            url = base_url + "/datastore/dump/" + resource["id"]
+            resource_dump_data = requests.get(url).text
+            df = pd.read_csv(StringIO(resource_dump_data))
+            print(df[param['col']])
 
