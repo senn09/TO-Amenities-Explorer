@@ -124,9 +124,18 @@ def refresh_db():
         print(f"Update amenity with {param['id']}")
     
 with app.app_context():
-        db.create_all()
+    db.create_all()
+    if not db.session.query(AmenityType).first():
+        db.session.add_all([
+            AmenityType(id=1, name='Library'),
+            AmenityType(id=2, name='Park'),
+            AmenityType(id=3, name='Community Centre'),
+            AmenityType(id=4, name='Civic Centre'),
+        ])
+        db.session.commit()
+    if not db.session.query(Amenity).first():
         refresh_db()
-        
+
 if __name__ == "__main__":
     
     app.run(debug=True)
