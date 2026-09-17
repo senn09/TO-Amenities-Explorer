@@ -2,7 +2,6 @@ from flask import Flask, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy import String, ForeignKey, select
-import sqlalchemy as sa
 from typing import List
 import data_import
 from dotenv import load_dotenv
@@ -124,22 +123,10 @@ def refresh_db():
         formatted_df.to_sql(name='amenity', con=db.engine, if_exists='append', index=False)
         print(f"Update amenity with {param['id']}")
     
-
-if __name__ == "__main__":
-
-    # Check if the database needs to be initialized
-    engine = sa.create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
-    inspector = sa.inspect(engine)
-    if not inspector.has_table("amenity"):
-        with app.app_context():
-            db.drop_all()
-            db.create_all()
-            app.logger.info('Initialized the database!')
-
-            # load data into database
-            refresh_db()
+with app.app_context():
+        db.create_all()
+        refresh_db()
         
-    else:
-        app.logger.info('Database already contains the users table.')
-
+if __name__ == "__main__":
+    
     app.run(debug=True)
