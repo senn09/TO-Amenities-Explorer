@@ -14,10 +14,13 @@ class Base(DeclarativeBase):
     pass
 
 app = Flask(__name__)
-if os.getenv('DATABASE_TYPE') == 'sqlite':
-    app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{app.root_path}/{os.getenv('DATABASE_NAME')}"
-elif os.getenv('DATABASE_TYPE') == 'postgres':
-    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('SQLALCHEMY_DATABASE_URI')
+
+if os.getenv('DATABASE_URL'):
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL').replace("postgres://", "postgresql://", 1)
+else:
+    SQLALCHEMY_DATABASE_URI = f"sqlite:///{app.root_path}/{os.getenv('DATABASE_NAME')}"
+
+app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
 
 db = SQLAlchemy(model_class=Base)
 
