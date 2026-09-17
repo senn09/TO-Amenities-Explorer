@@ -66,6 +66,7 @@ def format_data_for_db(param, df):
     else:
         df['type_id'] = param['type_id']
 
+    df = df.dropna(subset=['address'])
     return df[col_of_interest]   
 
 
