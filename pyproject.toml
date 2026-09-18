@@ -13,6 +13,7 @@ dependencies = [
     "jsonify>=0.5",
     "pandas>=3.0.5",
     "pandas-geojson>=2.2.1",
+    "psycopg2-binary>=2.9.13",
     "python-dotenv>=1.2.3",
     "requests>=2.34.2",
     "sqlalchemy>=2.0.52",
