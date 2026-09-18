@@ -1,10 +1,14 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import create_engine, inspect
-import project.data_import as data_import
+
 import os
 from click import echo
+
+import project.data_import as data_import
 
 # initialize database engine
 class Base(DeclarativeBase):
@@ -63,6 +67,9 @@ def register_blueprints(app):
 def create_app():
     # Create the Flask application
     app = Flask(__name__)
+
+    # Allows for requests from different domains
+    CORS(app)
 
     # Configure the Flask application
     config_type = os.getenv('CONFIG_TYPE', default='config.DevelopmentConfig')
