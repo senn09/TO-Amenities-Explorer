@@ -23,6 +23,7 @@ params =    [{
                 ],
             }]
 
+# code provided by open data
 def pull_data(param):
     print(f'retreving {param['id']} ...')
     url = base_url + "/api/3/action/package_show"
