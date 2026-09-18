@@ -10,7 +10,7 @@ def home():
     message = {"message": "Hello, World!"}
     return jsonify(message)
 
-@api_blueprint.route("/amenities", methods=["GET"])
+@api_blueprint.route("/api/amenities", methods=["GET"])
 def get_amenities():
     amenities = db.session.scalars(select(Amenity)).all()
     amenities_list = [{
@@ -22,7 +22,7 @@ def get_amenities():
     return jsonify(amenities_list)
 
 
-@api_blueprint.route("/users", methods=["GET"])
+@api_blueprint.route("/api/users", methods=["GET"])
 def get_users():
     users = db.session.scalars(select(User)).all()
     user_list = [{
@@ -32,7 +32,7 @@ def get_users():
     } for user in users]
     return jsonify(user_list), 200
 
-@api_blueprint.route("/login", methods=["POST"])
+@api_blueprint.route("/api/login", methods=["POST"])
 def login():
     data = request.get_json()
     username = data.get("username")
@@ -50,7 +50,7 @@ def login():
     else:
         return jsonify({"error": "Invalid credentials"}), 401
 
-@api_blueprint.route("/register", methods=["POST"])
+@api_blueprint.route("/api/register", methods=["POST"])
 def add_user():
     data = request.get_json()
 
