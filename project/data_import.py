@@ -12,16 +12,7 @@ params =    [{
                 "col_name_transform": [
                     ('BranchName', col_of_interest[0]),
                     ('Address', col_of_interest[1]),
-                ],
-                "col_of_interest": [
-                    'BranchName', 
-                    'Address', 
-                    'Website', 
-                    'SquareFootage', 
-                    'PublicParking',
-                    'PublicWashroom',
-                    'Hours',
-                    ]}, 
+                ]}, 
             { 
                 "id": "parks-and-recreation-facilities",
                 "type_id": 2,
@@ -30,13 +21,6 @@ params =    [{
                     ('ADDRESS', col_of_interest[1]),
                     ('TYPE', col_of_interest[2]),
                 ],
-                "col_of_interest": [
-                    'ASSET_NAME',
-                    'TYPE',
-                    'ADDRESS',
-                    'PHONE',
-                    'URL',
-                ]
             }]
 
 def pull_data(param):
@@ -56,7 +40,7 @@ def pull_data(param):
             df = pd.read_csv(StringIO(resource_dump_data))
     return df
 
-def format_data_for_db(param, df):
+def format_data_for_sql(param, df):
     # uses 'col_name_transform' to rename columns to match database model
     for i in range(len(param['col_name_transform'])):
         df.rename(columns={param['col_name_transform'][i][0]: param['col_name_transform'][i][1]}, inplace=True)
