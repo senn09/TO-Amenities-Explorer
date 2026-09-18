@@ -1,6 +1,7 @@
 .DS_Store
 database.db
 database.sqbpro
+data_import.ipynb
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
