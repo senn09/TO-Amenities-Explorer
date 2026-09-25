@@ -16,32 +16,8 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
-
-def db_init(app):
-    db.init_app(app)
-
-    # Check if the database needs to be initialized
-    engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
-    inspector = inspect(engine)
-    if not inspector.has_table("amenity"):
-        with app.app_context():
-            db.drop_all()
-            db.create_all()
-            app.logger.info('Initialized the database!')
-    else:
-        app.logger.info('Database already contains the amenity table.')
-
-    from project.models import AmenityType, Amenity
-
-    # check if data in tables is present
-    with app.app_context():
-        if not db.session.query(AmenityType).first():
-            load_amenity_type_data()
-        if not db.session.query(Amenity).first():
-            load_amenity_data()
-
 def load_amenity_type_data():
-    from models import AmenityType
+    from project.models import AmenityType
     amenity_types = ['Library', 'Park', 'Community Centre', 'Civic Centre']
     for amenity_type in amenity_types:
          db.session.add(AmenityType(name=amenity_type))
@@ -59,6 +35,29 @@ def load_amenity_data():
         # No need to commit, pandas handles that automatically
         formatted_df.to_sql(name='amenity', con=db.engine, if_exists='append', index=False)
         echo(f"Update amenity with {param['id']}")
+
+def db_init(app):
+    db.init_app(app)
+
+    # Check if the database needs to be initialized
+    engine = create_engine(app.config['SQLALCHEMY_DATABASE_URI'])
+    inspector = inspect(engine)
+    if not inspector.has_table("amenity") or not inspector.has_table("user"):
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+            app.logger.info('Initialized the database!')
+    else:
+        app.logger.info('Database already initialized.')
+
+    from project.models import AmenityType, Amenity
+
+    # load data if tables are empty
+    with app.app_context():
+        if not db.session.query(AmenityType).first():
+            load_amenity_type_data()
+        if not db.session.query(Amenity).first():
+            load_amenity_data()
 
 def register_blueprints(app):
     from project.routes import api_blueprint
