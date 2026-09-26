@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from flask_jwt_extended import JWTManager
 
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy import create_engine, inspect
@@ -66,6 +67,7 @@ def register_blueprints(app):
 def create_app():
     # Create the Flask application
     app = Flask(__name__)
+    jwt = JWTManager(app)
 
     # Allows for requests from different domains
     CORS(app)
