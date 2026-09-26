@@ -45,7 +45,6 @@ def db_init(app):
     inspector = inspect(engine)
     if not inspector.has_table("amenity") or not inspector.has_table("user"):
         with app.app_context():
-            db.drop_all()
             db.create_all()
             app.logger.info('Initialized the database!')
     else:
