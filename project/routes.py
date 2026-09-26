@@ -1,7 +1,9 @@
-from flask import jsonify, request
+from flask import jsonify, request, Blueprint
+# from flask_jwt import JWT, jwt_required, current_identity
+from werkzeug.security import generate_password_hash
 from project.models import Amenity, User
 from project import db
-from flask import Blueprint
+from sqlalchemy import select
 
 api_blueprint = Blueprint('api', __name__)
 
@@ -41,8 +43,9 @@ def login():
     if not username or not password:
             return jsonify({"error": "Missing username or password"}), 400
 
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    hashed_password = generate_password_hash(password)
 
+    # TODO is this safe to query and compare passcodes? does comparing passwords in sql have a safer alternative? 
     stmt = select(User).where(User.username ==  username and User.password == hashed_password)
     user = db.session.scalar(stmt)
     if user:
@@ -57,10 +60,16 @@ def add_user():
     username = data.get('username')
     password = data.get('password')
 
+    # Missing credentials
     if not username or not password:
         return jsonify({"error": "Missing username or password"}), 400
 
-    hashed_password = hashlib.sha256(password.encode()).hexdigest()
+    # Check if user exists
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user:
+        return jsonify({'message': 'User already exists. Please login.'}), 400
+
+    hashed_password = generate_password_hash(password)
     
     new_user = User(
         username = username,
