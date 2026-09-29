@@ -16,17 +16,48 @@ def home():
     message = {"message": "Hello, World!"}
     return jsonify(message)
 
+def pag_param_handler(data):
+    # TODO what happens at upper limit
+    page_default = 1
+    limit_default = 10
+    offset_default = 0
+
+    page_lower_lim = 1
+    limit_lower_lim = 10
+    offset_lower_lim = 0
+
+    def data_handler(d, default, lower_lim):
+        if d is None:
+            return default
+        else:
+            d = int(d)
+
+        # under lower limit
+        if d < lower_lim:
+            return default
+        else:
+            return d
+
+    return {
+        'page': data_handler(data.args.get('page'), page_default, page_lower_lim),
+        'per_page': data_handler(data.args.get('per_page'), limit_default, limit_lower_lim),
+        # 'offset': data_handler(data.args.get('offset'), offset_default, offset_lower_lim),
+    }
+        
+
 @api_blueprint.route("/api/amenities", methods=["GET"])
 @jwt_required()
 def get_amenities():
-    amenities = db.session.scalars(select(Amenity)).all()
+    pag_params = pag_param_handler(request)
+
+    page = db.paginate(select=select(Amenity), page=pag_params['page'], per_page=pag_params['per_page'])
+
     amenities_list = [{
         'id': amenity.id,
         'name': amenity.name,
         'type_id': amenity.type_id,
         'address': amenity.address,
-    } for amenity in amenities]
-    print(get_jwt_identity())
+    } for amenity in page]
     return jsonify(amenities_list)
 
 
