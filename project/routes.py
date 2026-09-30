@@ -49,8 +49,11 @@ def pag_param_handler(data):
 @jwt_required()
 def get_amenities():
     pag_params = pag_param_handler(request)
-
-    page = db.paginate(select=select(Amenity), page=pag_params['page'], per_page=pag_params['per_page'])
+    page = db.paginate(
+        select=select(Amenity), 
+        page=pag_params['page'], 
+        per_page=pag_params['per_page']
+        )
 
     amenities_list = [{
         'id': amenity.id,
