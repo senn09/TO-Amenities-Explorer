@@ -16,7 +16,7 @@ A backend REST API that aggregates Toronto Open Data on public amenities (parks,
 
 **1. Register an account**
 
-1. Create a new request, set the method to `POST`, and enter `<your Render URL>/register`.
+1. Create a new request, set the method to `POST`, and enter `https://to-amenities-explorer.onrender.com/register`.
 2. Open the **Body** tab, select **raw**, and choose **JSON** from the dropdown.
 3. Enter the following and click **Send**:
 
@@ -29,7 +29,7 @@ A backend REST API that aggregates Toronto Open Data on public amenities (parks,
 
 **2. Log in to get a token**
 
-1. Create a new `POST` request to `<your Render URL>/login`.
+1. Create a new `POST` request to `https://to-amenities-explorer.onrender.com/login`.
 2. Use the same raw JSON body as above and click **Send**.
 3. Copy the token from the response:
 
@@ -41,7 +41,7 @@ A backend REST API that aggregates Toronto Open Data on public amenities (parks,
 
 **3. Use the token to fetch amenities**
 
-1. Create a new `GET` request to `<your Render URL>/api/amenities`.
+1. Create a new `GET` request to `https://to-amenities-explorer.onrender.com/api/amenities`.
 2. Open the **Authorization** tab, set the type to **Bearer Token**, and paste your token into the **Token** field.
 3. Open the **Params** tab and add `page` = `1` and `per_page` = `10`.
 4. Click **Send** to receive a paginated list of amenities.
@@ -51,7 +51,7 @@ A backend REST API that aggregates Toronto Open Data on public amenities (parks,
 **1. Register an account**
 
 ```bash
-curl -X POST <your Render URL>/register \
+curl -X POST https://to-amenities-explorer.onrender.com/register \
   -H "Content-Type: application/json" \
   -d '{"username": "demo_user", "password": "demo_password"}'
 ```
@@ -59,7 +59,7 @@ curl -X POST <your Render URL>/register \
 **2. Log in to get a token**
 
 ```bash
-curl -X POST <your Render URL>/login \
+curl -X POST https://to-amenities-explorer.onrender.com/login \
   -H "Content-Type: application/json" \
   -d '{"username": "demo_user", "password": "demo_password"}'
 ```
@@ -75,7 +75,7 @@ The response contains your JWT:
 **3. Use the token to fetch amenities**
 
 ```bash
-curl "<your Render URL>/api/amenities?page=1&per_page=10" \
+curl "https://to-amenities-explorer.onrender.com/api/amenities?page=1&per_page=10" \
   -H "Authorization: Bearer <your_token>"
 ```
 
