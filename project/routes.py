@@ -19,11 +19,11 @@ def home():
 def pag_param_handler(data):
     # TODO what happens at upper limit
     page_default = 1
-    limit_default = 10
+    per_page_default = 10
     offset_default = 0
 
     page_lower_lim = 1
-    limit_lower_lim = 10
+    per_page_lower_lim = 10
     offset_lower_lim = 0
 
     def data_handler(d, default, lower_lim):
@@ -40,8 +40,7 @@ def pag_param_handler(data):
 
     return {
         'page': data_handler(data.args.get('page'), page_default, page_lower_lim),
-        'per_page': data_handler(data.args.get('per_page'), limit_default, limit_lower_lim),
-        # 'offset': data_handler(data.args.get('offset'), offset_default, offset_lower_lim),
+        'per_page': data_handler(data.args.get('per_page'), per_page_default, per_page_lower_lim),
     }
         
 
